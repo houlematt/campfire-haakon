@@ -43,9 +43,9 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
             } else if (message.type === 'EnterMessage'){
                 return 'User ' + message.user_id + ' entered at ' +message .created_at;
             } else if (message.type === 'AllowGuestsMessage'){
-                return 'User ' + message.user_id + ' allowed ';
+                return 'User ' + ChatroomService.getUserName(message.user_id) + ' allowed ';
             } else if(message.type === 'KickMessage'){
-                return 'User ' + message.user_id + ' left ';
+                return 'User ' + ChatroomService.getUserName(message.user_id) + ' left ';
             } else if(message.type === 'TextMessage'){
                 return message.body;
             } else {
@@ -53,14 +53,20 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
             }
         }
 
-        //$scope.getUserName = function(id){
-          //  console.log(id);
-            //return ChatroomService.getUserName(id);
-        //}
-
+        
+        var lastMessageReceived = null;
         function getMessages(){
-            ChatroomService.getRecentMessages($scope.widget.settings.roomId).then(function(messages){
+            ChatroomService.getRecentMessages($scope.widget.settings.roomId,15, lastMessageReceived).then(function(messages){
                 $scope.data = messages.data;
+                if(messages.data && messages.data.messages){
+                    for (var i = messages.data.messages.length - 1; i >= 0; i--) {
+                        messages.data.messages[i].userName = ChatroomService.getUserName(messages.data.messages[i].user_id);
+                        messages.data.messages[i].created_at = new Date(messages.data.messages[i].created_at);
+                        if(i === 0){
+                            lastMessageReceived = messages.data.messages[i].id;
+                        }
+                    };
+                }
             });
         }
 
@@ -74,12 +80,22 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
         if(isWidgetReady()){
             ChatroomService.currentToken = $scope.widget.settings.userToken;
             getMessages();
-            $interval(getMessages, 5000);
-            console.log(ChatroomService.getUserName(1362996));
+            $interval(getMessages, 3000);
         }
     };
 
     var campfireWidgetLink = angular.noop;
 
     return new WidgetDirective(campfireWidget, campfireWidgetLink, campfireWidgetController);
-}]);
+}]).directive('ngEnter', function() {
+    return function(scope, element, attrs) {
+    element.bind("keydown keypress", function(event) {
+        if(event.which === 13) {
+            scope.$apply(function(){
+            scope.$eval(attrs.ngEnter);
+            });
+            event.preventDefault();
+        }
+        });
+    };
+});

@@ -98,9 +98,9 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
         if(campfireService.campfireUsers[userId]) {
             return campfireService.campfireUsers[userId];
         } else {
-            campfireService.getUser(userId).success(function(user) {
-                if(user) {
-                    var userName = user.name;
+            campfireService.getUser(userId).success(function(data) {
+                if(data.user) {
+                    var userName = data.user.name;
                     campfireService.campfireUsers[userId] = userName;
                     return userName;
                 } else {

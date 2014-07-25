@@ -1,10 +1,11 @@
 div.campfireWidgetSmall
     div.messagesContainer
             div.row(ng-repeat="chatMessage in data.messages track by $index", ng-class-even="'even'")
-                span.one.columns.userName {{chatMessage.user_id}} &nbsp;
-                span.eleven.columns.messageBody {{renderMessage(chatMessage)}} &nbsp;
+                span.two.columns.userName {{chatMessage.userName}} &nbsp;
+                span.eight.columns.messageBody {{renderMessage(chatMessage)}} &nbsp;
+                span.two.columns.messageTime {{chatMessage.created_at | date:'hh:mm a'}}
     div.inputContainer
         span.nine.columns
-            input(type="text", ng-model="msgtext.message")
+            input(type="text", ng-model="msgtext.message", ng-enter="sendMessage()")
         span.two.columns.button.success(ng-click="sendMessage()") Send
 
