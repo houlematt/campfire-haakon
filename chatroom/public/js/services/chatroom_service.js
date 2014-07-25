@@ -56,6 +56,15 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
     }
 
     /**
+     * Get the current user by id
+     * @returns {*|Array|null|String|Object|HTMLElement}
+     */
+    campfireService.getUser = function getUser(userId) {
+        var route = "/users/" + userId + ".json";
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+route);
+    }
+
+    /**
      * Helper function that will build a url with the request parameters that are provided.
      *
      * @param url The url we are adding request parameters too
