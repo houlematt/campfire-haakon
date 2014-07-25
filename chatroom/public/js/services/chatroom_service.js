@@ -28,10 +28,7 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
             parameters["since_message_id"] = since_message_id;
         }
 
-        parameters["token"] = campfireAPIToken;
-        route = buildUrl(route, parameters);
-
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+route);
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route, parameters));
     };
 
     /**
@@ -48,40 +45,60 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
 
     /**
      * Get a list of rooms that the current user has access too.
+     *
      * @returns {*|Array|null|String|Object|HTMLElement}
      */
     campfireService.getRooms = function getRooms() {
         var route = "/rooms.json";
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+route);
-    }
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+    };
 
     /**
-     * Get the current user by id
+     * Get user by id
+     *
      * @returns {*|Array|null|String|Object|HTMLElement}
      */
     campfireService.getUser = function getUser(userId) {
         var route = "/users/" + userId + ".json";
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+route);
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+    };
+
+    /**
+     * Get the current user
+     *
+     * @returns {*|Array|null|String|Object|HTMLElement}
+     */
+    campfireService.getCurrentUser = function getCurrentUser() {
+        var route = "/me.json";
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
     }
 
     /**
-     * Helper function that will build a url with the request parameters that are provided.
+     * Helper function that will build the url route with the request parameters that are provided.
      *
-     * @param url The url we are adding request parameters too
-     * @param parameters The request parameters that we are adding
+     * @param route The url route we are adding request parameters too
+     * @param params The request parameters that we are adding
      * @returns {*}
      */
-    function buildUrl(url, parameters){
+    function buildRoute(route, params){
         var queryString = "";
-        for(var key in parameters) {
-            var value = parameters[key];
+
+        // check if there were any parameters passed in and initialize if necessary.
+        if(!params) {
+            params = new Array();
+        }
+        // we always need the token parameter so setting it here.
+        params["token"] = campfireAPIToken;
+
+        for(var key in params) {
+            var value = params[key];
             queryString += encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&";
         }
         if (queryString.length > 0){
             queryString = queryString.substring(0, queryString.length-1); //chop off last "&"
-            url = url + "?" + queryString;
+            route = route + "?" + queryString;
         }
-        return url;
+        return route;
     }
 
     return campfireService;
