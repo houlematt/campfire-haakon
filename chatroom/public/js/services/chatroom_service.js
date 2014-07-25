@@ -17,19 +17,23 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
      * @returns {*|Array|null|String|Object|HTMLElement}
      */
     campfireService.getRecentMessages = function getRecentMessages(roomId, limit, since_message_id) {
-        //var url = CAMPFIRE_DOMAIN + "/room/" + roomId + "/recent.json";
-        var url = "/room/" + roomId + "/recent.json";
+        var route = "/room/" + roomId + "/recent.json",
+            parameters = new Array();
 
-        var parameters = new Array();
         if(limit) {
             parameters["limit"] = limit;
+        } else {
+            parameters["limit"] = 10;
         }
+
         if(since_message_id) {
             parameters["since_message_id"] = since_message_id;
         }
-        url = buildUrl(url, parameters);
 
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?url='+url + '&token='+campfireAPIToken);
+        parameters["token"] = campfireAPIToken;
+        route = buildUrl(route, parameters);
+
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+route);
     };
 
     /**
