@@ -1,10 +1,9 @@
 'use strict';
-chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SERVICES_URL','$q', function($http, CoreUserService, DASHBOARD_SERVICES_URL, $q) {
-    var campfireService = {},
-        appSettings = CoreUserService.getAppSettings('chatroom');
-
+chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', function($http, DASHBOARD_SERVICES_URL) {
+    var campfireService = {};
 
     campfireService.currentToken = '';
+    campfireService.campfireUsers = new Array();
 
     /**
      * Get the recent messages for a room.
@@ -46,6 +45,17 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
     };
 
     /**
+     * Get room by id
+     *
+     * @param roomId The id of the room we are getting
+     * @returns {*|Array|null|String|Object|HTMLElement}
+     */
+    campfireService.getRoom = function getRoom(roomId) {
+        var route = "/room/" + roomId + ".json";
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+    };
+
+    /**
      * Get a list of rooms that the current user has access too.
      *
      * @returns {*|Array|null|String|Object|HTMLElement}
@@ -73,7 +83,34 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
     campfireService.getCurrentUser = function getCurrentUser() {
         var route = "/me.json";
         return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
-    }
+    };
+
+    /**
+     * Responsible for getting the user name that is associated to the provide user id.
+     *
+     * @param userId The user id we are getting the user name for.
+     * @returns {*}
+     */
+    campfireService.getUserName = function getUserName(userId) {
+        if(!userId) {
+            return " ";
+        }
+        if(campfireService.campfireUsers[userId]) {
+            return campfireService.campfireUsers[userId];
+        } else {
+            campfireService.getUser(userId).success(function(user) {
+                if(user) {
+                    var userName = user.name;
+                    campfireService.campfireUsers[userId] = userName;
+                    return userName;
+                } else {
+                    return " ";
+                }
+            }).error(function() {
+                return " ";
+            });
+        }
+    };
 
     /**
      * Helper function that will build the url route with the request parameters that are provided.
