@@ -44,8 +44,8 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
      * @returns {*|HttpPromise}
      */
     campfireService.createMessage = function createMessage(roomId, message) {
-        var url = "/room/" + roomId + "/speak.json";
-        return $http.post(DASHBOARD_SERVICES_URL+'/campfire', {token:campfireAPIToken,data:{message:{type:"TextMessage",body:message}}, url:url});
+        var route = "/room/" + roomId + "/speak.json";
+        return $http.post(DASHBOARD_SERVICES_URL+'/campfire', {token:campfireAPIToken,data:{message:{type:"TextMessage",body:message}}, route:route});
     };
 
     /**
