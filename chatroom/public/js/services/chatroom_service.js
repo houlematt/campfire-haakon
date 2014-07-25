@@ -2,9 +2,7 @@
 chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SERVICES_URL','$q', function($http, CoreUserService, DASHBOARD_SERVICES_URL, $q) {
     var campfireService = {},
         appSettings = CoreUserService.getAppSettings('chatroom'),
-        campfireAPIToken = '86f0e7a972be8a09a31c0346e87493dce3b91a40',
-        CAMPFIRE_DOMAIN = "https://" + campfireAPIToken + ":x@meltwater.campfirenow.com",
-        CAMPFIRE_STREAMING_DOMAIN = "http://" + campfireAPIToken + ":x@meltwater.campfirenow.com";
+        campfireAPIToken = '86f0e7a972be8a09a31c0346e87493dce3b91a40';
 
     /**
      * Get the recent messages for a room.
@@ -49,14 +47,13 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
     };
 
     /**
-     * Live stream of the messages for a room
-     * @param roomId The room we are getting the live stream for.
+     * Get a list of rooms that the current user has access too.
      * @returns {*|Array|null|String|Object|HTMLElement}
      */
-    campfireService.liveStream = function liveStream(roomId) {
-        var url = CAMPFIRE_STREAMING_DOMAIN + "/room/" + roomId + "/live.json";
-        return $http.get(url);
-    };
+    campfireService.getRooms = function getRooms() {
+        var route = "/rooms.json";
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+route);
+    }
 
     /**
      * Helper function that will build a url with the request parameters that are provided.
