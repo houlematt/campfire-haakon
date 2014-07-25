@@ -24,23 +24,8 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
     var campfireWidget = DashboardWidgetService.getWidget('campfire-widget');
     campfireWidget.maximizedViewFile = 'campfire_widget_max';
 
-    var campfireWidgetController = function textWidgetController ($scope){
+    var campfireWidgetController = function campfireWidgetController($scope){
 
-        var fakeMessage = {
-          "message": {
-            "id": 1,
-            "room-id": "1",
-            "user-id": "2",
-            "body": "Hello Room",
-            "created-at": "2009-11-22T23:46:58Z",
-            "type": "Starred",
-            "starred": "true"
-          }
-        };
-
-        var data =    {
-            "messages": []
-        };
         $scope.text = 'Test';
         $scope.data = [];
         $scope.sendMessage = function(){

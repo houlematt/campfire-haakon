@@ -29,7 +29,7 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
             parameters["since_message_id"] = since_message_id;
         }
 
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route, parameters));
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?token='+campfireService.currentToken+'&route='+buildRoute(route, parameters));
     };
 
     /**
@@ -52,7 +52,7 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
      */
     campfireService.getRoom = function getRoom(roomId) {
         var route = "/room/" + roomId + ".json";
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?token='+campfireService.currentToken+'&route='+buildRoute(route));
     };
 
     /**
@@ -62,7 +62,7 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
      */
     campfireService.getRooms = function getRooms() {
         var route = "/rooms.json";
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?token='+campfireService.currentToken+'&route='+buildRoute(route));
     };
 
     /**
@@ -72,7 +72,7 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
      */
     campfireService.getUser = function getUser(userId) {
         var route = "/users/" + userId + ".json";
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?token='+campfireService.currentToken+'&route='+buildRoute(route));
     };
 
     /**
@@ -82,7 +82,7 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
      */
     campfireService.getCurrentUser = function getCurrentUser() {
         var route = "/me.json";
-        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?route='+buildRoute(route));
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?token='+campfireService.currentToken+'&route='+buildRoute(route));
     };
 
     /**
@@ -121,13 +121,6 @@ chatroomApp.service('ChatroomService', ['$http', 'DASHBOARD_SERVICES_URL', funct
      */
     function buildRoute(route, params){
         var queryString = "";
-
-        // check if there were any parameters passed in and initialize if necessary.
-        if(!params) {
-            params = new Array();
-        }
-        // we always need the token parameter so setting it here.
-        params["token"] = campfireService.currentToken;
 
         for(var key in params) {
             var value = params[key];
