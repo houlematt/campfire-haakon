@@ -1,0 +1,4 @@
+h1 Dashboard Mode
+    div(ng-repeat="chatMessage in data track by $index")
+        span.userName {{chatMessage.message.user-id}}
+        span.messageBody {{chatMessage.message.body}}

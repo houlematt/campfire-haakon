@@ -1,2 +1,2 @@
 'use strict';
-app = exports.app = require('express')();
+var app = exports.app = require('express')();

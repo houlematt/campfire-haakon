@@ -1,4 +1,4 @@
 'use strict';
-chatroomApp.controller('IndexCtrl', ['$scope', 'ChatroomService', 'CoreCommon', function($scope, ChatroomService, CoreCommon) {
+chatroomApp.controller('IndexCtrl', ['$scope', 'CoreCommon', function($scope, CoreCommon) {
     $scope.name='World';
 }])
