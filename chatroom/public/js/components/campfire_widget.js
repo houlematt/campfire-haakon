@@ -45,7 +45,7 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
         $scope.data = [];
         $scope.sendMessage = function(){
             var message = angular.copy($scope.text);
-            //ChatroomService.createMessage(1234,message);
+            ChatroomService.createMessage(599528,message);
             console.log(message);
             $scope.text = '';
         }
@@ -65,12 +65,11 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
         };
         function getMessages(){
             ChatroomService.getRecentMessages(599528).then(function(messages){
-                console.log(messages);
                 $scope.data = messages.data;
             });
         }
-        
-        //$interval(getMessages, 3000);
+        getMessages();
+        $interval(getMessages, 5000);
 
     };
 
