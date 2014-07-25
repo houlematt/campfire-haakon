@@ -44,33 +44,45 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
         $scope.text = 'Test';
         $scope.data = [];
         $scope.sendMessage = function(){
-            var message = angular.copy($scope.text);
+            var message = angular.copy($scope.msgtext);
             ChatroomService.createMessage(599528,message);
-            console.log(message);
-            $scope.text = '';
+            $scope.msgtext = '';
         }
-        //console.log(data);
-        for (var i = 10 - 1; i >= 0; i--) {
-            data.messages.push(
-                {
-                    "type": "TextMessage",
-                    "user_id": 1362995,
-                    "id": 1326583658,
-                    "room_id": 599528,
-                    "starred": false,
-                    "body": "hey justin",
-                    "created_at": "2014/07/25 13:44:52 +0000"
-                }
-            );
-        };
+
+        $scope.renderMessage = function(message){
+            if(message.type === 'TimestampMessage'){
+                return message.created_at;
+            } else if (message.type === 'EnterMessage'){
+                return 'User ' + message.user_id + ' entered at ' +message .created_at;
+            } else if (message.type === 'AllowGuestsMessage'){
+                return 'User ' + message.user_id + ' allowed ';
+            } else if(message.type === 'KickMessage'){
+                return 'User ' + message.user_id + ' left ';
+            } else if(message.type === 'TextMessage'){
+                return message.body;
+            } else {
+                return '';
+            }
+        }
+
         function getMessages(){
-            ChatroomService.getRecentMessages(599528).then(function(messages){
+            ChatroomService.getRecentMessages($scope.widget.settings.roomId).then(function(messages){
                 $scope.data = messages.data;
             });
         }
-        getMessages();
-        $interval(getMessages, 5000);
 
+
+        function isWidgetReady(){
+            if($scope.widget && $scope.widget.settings && $scope.widget.settings.roomId && $scope.widget.settings.userToken){
+                return true;
+            }
+            return false;
+        }
+        if(isWidgetReady()){
+            ChatroomService.currentToken = $scope.widget.settings.userToken;
+            getMessages();
+            $interval(getMessages, 5000);
+        }
     };
 
     var campfireWidgetLink = angular.noop;

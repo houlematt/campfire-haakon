@@ -1,8 +1,10 @@
 'use strict';
 chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SERVICES_URL','$q', function($http, CoreUserService, DASHBOARD_SERVICES_URL, $q) {
     var campfireService = {},
-        appSettings = CoreUserService.getAppSettings('chatroom'),
-        campfireAPIToken = '86f0e7a972be8a09a31c0346e87493dce3b91a40';
+        appSettings = CoreUserService.getAppSettings('chatroom');
+
+
+    campfireService.currentToken = '';
 
     /**
      * Get the recent messages for a room.
@@ -40,7 +42,7 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
      */
     campfireService.createMessage = function createMessage(roomId, message) {
         var route = "/room/" + roomId + "/speak.json";
-        return $http.post(DASHBOARD_SERVICES_URL+'/campfire', {token:campfireAPIToken,data:{message:{type:"TextMessage",body:message}}, route:route});
+        return $http.post(DASHBOARD_SERVICES_URL+'/campfire', {token:campfireService.currentToken,data:{message:{type:"TextMessage",body:message}}, route:route});
     };
 
     /**
@@ -88,7 +90,7 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SE
             params = new Array();
         }
         // we always need the token parameter so setting it here.
-        params["token"] = campfireAPIToken;
+        params["token"] = campfireService.currentToken;
 
         for(var key in params) {
             var value = params[key];
