@@ -19,7 +19,7 @@ chatroomApp.run(['DashboardWidgetService', function(DashboardWidgetService) {
     });
 
 }]);
-chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomService', function(DashboardWidgetService, ChatroomService){
+chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomService', '$interval', function(DashboardWidgetService, ChatroomService, $interval){
 
     var campfireWidget = DashboardWidgetService.getWidget('campfire-widget');
     campfireWidget.maximizedViewFile = 'campfire_widget_max';
@@ -38,13 +38,40 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
           }
         };
 
-        var data = [];
-        ChatroomService.getRecentMessages(599528).success(function(response){
-            console.log(response);
-            //data = response;
-        });
+        var data =    {
+            "messages": []
+        };
+        $scope.text = 'Test';
+        $scope.data = [];
+        $scope.sendMessage = function(){
+            var message = angular.copy($scope.text);
+            //ChatroomService.createMessage(1234,message);
+            console.log(message);
+            $scope.text = '';
+        }
         //console.log(data);
-        $scope.data = data;
+        for (var i = 10 - 1; i >= 0; i--) {
+            data.messages.push(
+                {
+                    "type": "TextMessage",
+                    "user_id": 1362995,
+                    "id": 1326583658,
+                    "room_id": 599528,
+                    "starred": false,
+                    "body": "hey justin",
+                    "created_at": "2014/07/25 13:44:52 +0000"
+                }
+            );
+        };
+        function getMessages(){
+            ChatroomService.getRecentMessages(599528).then(function(messages){
+                console.log(messages);
+                $scope.data = messages.data;
+            });
+        }
+        
+        //$interval(getMessages, 3000);
+
     };
 
     var campfireWidgetLink = angular.noop;

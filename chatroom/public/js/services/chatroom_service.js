@@ -1,5 +1,5 @@
 'use strict';
-chatroomApp.service('ChatroomService', ['$http', 'CoreUserService', function($http, CoreUserService) {
+chatroomApp.service('ChatroomService', ['$http', 'CoreUserService','DASHBOARD_SERVICES_URL','$q', function($http, CoreUserService, DASHBOARD_SERVICES_URL, $q) {
     var campfireService = {},
         appSettings = CoreUserService.getAppSettings('chatroom'),
         campfireAPIToken = '86f0e7a972be8a09a31c0346e87493dce3b91a40',
@@ -17,7 +17,9 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService', function($ht
      * @returns {*|Array|null|String|Object|HTMLElement}
      */
     campfireService.getRecentMessages = function getRecentMessages(roomId, limit, since_message_id) {
-        var url = CAMPFIRE_DOMAIN + "/room/" + roomId + "/recent.json";
+        //var url = CAMPFIRE_DOMAIN + "/room/" + roomId + "/recent.json";
+        var url = "/room/" + roomId + "/recent.json";
+
         var parameters = new Array();
         if(limit) {
             parameters["limit"] = limit;
@@ -26,7 +28,8 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService', function($ht
             parameters["since_message_id"] = since_message_id;
         }
         url = buildUrl(url, parameters);
-        return $http.jsonp(url);
+
+        return $http.get(DASHBOARD_SERVICES_URL+'/campfire?url='+url + '&token='+campfireAPIToken);
     };
 
     /**
