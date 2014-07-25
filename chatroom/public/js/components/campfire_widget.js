@@ -19,7 +19,7 @@ chatroomApp.run(['DashboardWidgetService', function(DashboardWidgetService) {
     });
 
 }]);
-chatroomApp.directive('campfireWidget', ['DashboardWidgetService', function(DashboardWidgetService){
+chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomService', function(DashboardWidgetService, ChatroomService){
 
     var campfireWidget = DashboardWidgetService.getWidget('campfire-widget');
     campfireWidget.maximizedViewFile = 'campfire_widget_max';
@@ -37,10 +37,13 @@ chatroomApp.directive('campfireWidget', ['DashboardWidgetService', function(Dash
             "starred": "true"
           }
         };
+
         var data = [];
-        for (var i = 10 - 1; i >= 0; i--) {
-            data.push(fakeMessage);
-        };
+        ChatroomService.getRecentMessages(599528).success(function(response){
+            console.log(response);
+            //data = response;
+        });
+        //console.log(data);
         $scope.data = data;
     };
 
