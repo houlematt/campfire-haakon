@@ -1,13 +1,10 @@
 div.campfireWidgetSmall
     div.messagesContainer
-        scrollable-div
             div.row(ng-repeat="chatMessage in data.messages track by $index", ng-class-even="'even'")
                 span.one.columns.userName {{chatMessage.user_id}} &nbsp;
-                span.eight.columns.messageBody {{renderMessage(chatMessage)}} &nbsp;
+                span.eleven.columns.messageBody {{renderMessage(chatMessage)}} &nbsp;
     div.inputContainer
         span.nine.columns
-            input(type="text", ng-model="msgtext")
-            div {{msgtext}}
+            input(type="text", ng-model="msgtext.message")
         span.two.columns.button.success(ng-click="sendMessage()") Send
-
 

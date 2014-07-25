@@ -19,7 +19,7 @@ chatroomApp.run(['DashboardWidgetService', function(DashboardWidgetService) {
     });
 
 }]);
-chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomService', '$interval', function(DashboardWidgetService, ChatroomService, $interval){
+chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomService', '$interval', '$filter', function(DashboardWidgetService, ChatroomService, $interval, $filter){
 
     var campfireWidget = DashboardWidgetService.getWidget('campfire-widget');
     campfireWidget.maximizedViewFile = 'campfire_widget_max';
@@ -28,15 +28,18 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
 
         $scope.text = 'Test';
         $scope.data = [];
+        $scope.msgtext = {
+            message:''
+        };
         $scope.sendMessage = function(){
-            var message = angular.copy($scope.msgtext);
-            ChatroomService.createMessage(599528,message);
-            $scope.msgtext = '';
+            var message = angular.copy($scope.msgtext.message);
+            ChatroomService.createMessage($scope.widget.settings.roomId, message);
+            $scope.msgtext.message = '';
         }
 
         $scope.renderMessage = function(message){
             if(message.type === 'TimestampMessage'){
-                return message.created_at;
+                return $filter('mwDate')(new Date(message.created_at));
             } else if (message.type === 'EnterMessage'){
                 return 'User ' + message.user_id + ' entered at ' +message .created_at;
             } else if (message.type === 'AllowGuestsMessage'){
@@ -49,6 +52,11 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
                 return '';
             }
         }
+
+        //$scope.getUserName = function(id){
+          //  console.log(id);
+            //return ChatroomService.getUserName(id);
+        //}
 
         function getMessages(){
             ChatroomService.getRecentMessages($scope.widget.settings.roomId).then(function(messages){
@@ -67,6 +75,7 @@ chatroomApp.directive('campfireWidget',  ['DashboardWidgetService', 'ChatroomSer
             ChatroomService.currentToken = $scope.widget.settings.userToken;
             getMessages();
             $interval(getMessages, 5000);
+            console.log(ChatroomService.getUserName(1362996));
         }
     };
 
