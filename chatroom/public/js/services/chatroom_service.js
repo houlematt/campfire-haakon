@@ -3,7 +3,8 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService', function($ht
     var campfireService = {},
         appSettings = CoreUserService.getAppSettings('chatroom'),
         campfireAPIToken = '86f0e7a972be8a09a31c0346e87493dce3b91a40',
-        CAMPFIRE_DOMAIN = "https://" + campfireAPIToken + ":x@meltwater.campfirenow.com";
+        CAMPFIRE_DOMAIN = "https://" + campfireAPIToken + ":x@meltwater.campfirenow.com",
+        CAMPFIRE_STREAMING_DOMAIN = "http://" + campfireAPIToken + ":x@meltwater.campfirenow.com";
 
     campfireService.getRecentMessages = function getRecentMessages(roomId) {
         var url = CAMPFIRE_DOMAIN + "/room/" + roomId + "/recent.json";
@@ -13,6 +14,11 @@ chatroomApp.service('ChatroomService', ['$http', 'CoreUserService', function($ht
     campfireService.createMessage = function createMessage(roomId, message) {
         var url = CAMPFIRE_DOMAIN + "/room/" + roomId + "/speak.json";
         return $http.post(url, message);
+    };
+
+    campfireService.liveStream = function liveStream(roomId) {
+        var url = CAMPFIRE_STREAMING_DOMAIN + "/room/" + roomId + "/live.json";
+        return $http.get(url);
     };
 
     return campfireService;
